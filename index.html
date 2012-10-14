@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+	<head>
+
+		<title>gmap component</title>
+
+		<script type="text/javascript" src="https://maps.google.com/maps/api/js?sensor=false"></script>
+		<script type="text/javascript" src="http://code.jquery.com/jquery.js"></script>
+		<script type="text/javascript" src="gmap-component.js"></script>
+
+		<script type="text/javascript">
+			$(document).ready(function(){
+				//первая карта инициализируется в режиме только отобразить и больше ничего не делать
+				new Gmap({
+					target: 'target'
+				});	
+				//вторая карта после базовой инициализации начнет читать мышь и записывать координаты и зум в data-gmap по клику на карте плюс рисовать маркер в месте клика
+				new Gmap({
+					mode:'encode'
+					,target: 'target1'
+				});	
+
+				//остальные две карты стартуют плагином в режиме чтения
+				$('div.mapStart').gmap();
+			});
+		</script>
+
+		<style>
+			html,body {
+				width:100%;
+				height: 100%;
+				padding: 0;
+				margin: 0;
+			}
+			.map {
+				width:100%;
+				padding: 0;
+				margin: 0;
+				height: 250px;
+				background-color: #fefefe;
+			}
+		</style>
+
+	</head>
+	<body>	
+		<div id="target" class="map" data-gmap="49.986552,36.226593,18"></div>
+		<div id="target1" class="map" data-gmap="54.513309908567884,36.27350891858862,14"></div>
+		<div id="target2" class="map mapStart" data-gmap="54.913309908567884,36.27350891858862,18"></div>
+		<div id="target3" class="map mapStart" data-gmap="54.513309908567884,36.27350891858862,20"></div>
+	</body>
+</html>
