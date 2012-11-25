@@ -13,15 +13,56 @@
 				//первая карта инициализируется в режиме только отобразить и больше ничего не делать
 				new Gmap({
 					target: 'target'
-				});	
+				});
 				//вторая карта после базовой инициализации начнет читать мышь и записывать координаты и зум в data-gmap по клику на карте плюс рисовать маркер в месте клика
 				new Gmap({
 					mode:'encode'
 					,target: 'target1'
-				});	
+				});
 
-				//остальные две карты стартуют плагином в режиме чтения
+				//тут карты с классом mapStart стартуют плагином в режиме чтения
 				$('div.mapStart').gmap();
+
+				// //тут карта стартует в режиме запоминания центра и зума, для фиксации площади
+				new Gmap({
+					mode:'encodeBounds'
+					,target: 'target4'
+				});
+
+				// тут событие клика отрисует карту с запомненной позицией центра и зума
+				$('body').on('click','a.encodeBounds',function(e) {
+					if ($('#encodeBounds-container').length == 0) {
+						$('#target4').after('<div id="encodeBounds-container" class="map"></div>');
+					}
+					$('#encodeBounds-container').attr('data-gmap',$('#target4').attr('data-gmap'));
+					new Gmap ({
+						mode:'showBounds'
+						,target: 'encodeBounds-container'
+					});
+					e.preventDefault();
+					return false;
+				});
+
+				//эта карта стартует в режиме запоминания кликов по ней, для отрисовки трека
+				new Gmap ({
+					mode:'encodeTrack'
+					,target: 'target5'
+				});
+
+				// тут событие клика отрисует карту с предварительно нарисованной траекторией
+				$('body').on('click','a.encodeTrack',function(e) {
+					if ($('#encodeTrack-container').length == 0) {
+						$('#target5').after('<div id="encodeTrack-container" class="map"></div>');
+					}
+					$('#encodeTrack-container').attr('data-gmap',$('#target5').attr('data-gmap'));
+					new Gmap ({
+						mode:'showTrack'
+						,target: 'encodeTrack-container'
+					});
+					e.preventDefault();
+					return false;
+				});
+
 			});
 		</script>
 
@@ -33,19 +74,34 @@
 				margin: 0;
 			}
 			.map {
-				width:100%;
+				width:400px;
 				padding: 0;
-				margin: 0;
-				height: 250px;
+				margin: 10px;
+				height: 300px;
 				background-color: #fefefe;
+			}
+			.map-container {
+				overflow:hidden;
+			}
+			.mapStart {
+				float:left;
 			}
 		</style>
 
 	</head>
-	<body>	
+	<body>
+		<h2>Первая карта, только отобразить</h2>
 		<div id="target" class="map" data-gmap="49.986552,36.226593,18"></div>
+		<h2>Вторая, читает и записывает координаты, рисует маркер  в месте клика</h2>
 		<div id="target1" class="map" data-gmap="54.513309908567884,36.27350891858862,14"></div>
-		<div id="target2" class="map mapStart" data-gmap="54.913309908567884,36.27350891858862,18"></div>
-		<div id="target3" class="map mapStart" data-gmap="54.513309908567884,36.27350891858862,20"></div>
+		<h2>Следующие две карты стартуют плагином и отображают координаты</h2>
+		<div class="map-container">
+			<div id="target2" class="map mapStart" data-gmap="54.913309908567884,36.27350891858862,18"></div>
+			<div id="target3" class="map mapStart" data-gmap="54.513309908567884,36.27350891858862,20"></div>
+		</div>
+		<h2>Следующая читает и запоминает координаты участка и зум, по клику <a href="" class="encodeBounds">сюда</a> рисует еще одну карту с сохраненным значением центра участка и зума</h2>
+		<div id="target4" class="map encodeBoundsMap" data-gmap="54.513309908567884,36.27350891858862,20"></div>
+		<h2>Следующая карта читает клики на себе, рисует по ним траекторию и по клику <a href="" class="encodeTrack">сюда</a> рисует еще одну карту с сохраненной траекторией и запомненным зумом</h2>
+		<div id="target5" class="map encodeTrackMap" data-gmap="55.187531533024234,36.83344553143308,7,54.509390087753204:36.243896484375|54.585858339468814:36.10107421875|54.7320221619364:36.243896484375|55.06683591175364:36.617431640625|55.39263257525847:36.815185546875|55.573169554392905:37.3095703125|55.73432783956336:37.628173828125"></div>
 	</body>
 </html>
